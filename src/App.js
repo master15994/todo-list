@@ -6,7 +6,7 @@ function App() {
   const [newTask, setNewTask] = useState('');
 
   const addTask = () => {
-    setTask([...task, newTask]);
+    setTask([...task, { title: newTask, completed: false }]);
     setNewTask('');
   };
 
@@ -17,6 +17,12 @@ function App() {
 
   const searchTask = searchText =>
     task.filter(text => text.includes(searchText));
+
+  const toggleTask = i => {
+    const updateTodos = [...task];
+    updateTodos[i].completed = !updateTodos[i].completed;
+    setTask(updateTodos);
+  };
 
   return (
     <div className="app">
@@ -46,7 +52,10 @@ function App() {
         <ul>
           {task.map((tasks, i) => (
             <li>
-              {tasks}
+              {tasks.title}
+              <button onClick={() => toggleTask(i)} className={c.button2}>
+                {tasks.completed ? 'Выполнено' : 'Не выполнено'}
+              </button>
               <button className={c.button2} onClick={() => deleteTask(i)}>
                 Удалить
               </button>
