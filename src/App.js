@@ -1,23 +1,59 @@
-import logo from './logo.svg';
-import './App.css';
+import c from './App.module.css';
+import React, { useState } from 'react';
 
 function App() {
+  const [task, setTask] = useState([]);
+  const [newTask, setNewTask] = useState('');
+
+  const addTask = () => {
+    setTask([...task, newTask]);
+    setNewTask('');
+  };
+
+  const deleteTask = i => {
+    const updatedTodos = task.filter((_, index) => index !== i);
+    setTask(updatedTodos);
+  };
+
+  const searchTask = searchText =>
+    task.filter(text => text.includes(searchText));
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <h1>Список</h1>
+      <div>
+        <textarea
+          value={newTask}
+          onChange={el => {
+            setNewTask(el.target.value);
+          }}
+          placeholder="Записать задачу"
+        ></textarea>
+      </div>
+      <div>
+        <button className={c.button1} onClick={addTask}>
+          Добавить пост
+        </button>
+      </div>
+      <div>
+        <h2>Списисок Задач</h2>
+        <textarea
+          onChange={e => {
+            setTask(searchTask(e.target.value));
+          }}
+          placeholder="Искать задачу"
+        ></textarea>
+        <ul>
+          {task.map((tasks, i) => (
+            <li>
+              {tasks}
+              <button className={c.button2} onClick={() => deleteTask(i)}>
+                Удалить
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
