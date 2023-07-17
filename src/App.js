@@ -1,9 +1,20 @@
 import c from './App.module.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-function App() {
+const App = () => {
   const [task, setTask] = useState([]);
   const [newTask, setNewTask] = useState('');
+
+  useEffect(() => {
+    const storedTasks = localStorage.getItem('tasks');
+    if (storedTasks) {
+      setTask(JSON.parse(storedTasks));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(task));
+  }, [task]);
 
   const addTask = () => {
     setTask([...task, { title: newTask, completed: false }]);
@@ -16,7 +27,7 @@ function App() {
   };
 
   const searchTask = searchText =>
-    task.filter(text => text.includes(searchText));
+    task.filter(task => task.title.includes(searchText));
 
   const toggleTask = i => {
     const updateTodos = [...task];
@@ -65,6 +76,5 @@ function App() {
       </div>
     </div>
   );
-}
-
+};
 export default App;
