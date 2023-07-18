@@ -1,0 +1,12 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.label {
+  margin-right: 20px;
+}
+.select {
+  padding: 4px;
+}

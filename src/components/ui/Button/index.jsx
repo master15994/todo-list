@@ -1,5 +1,5 @@
-import classNames from "classnames";
-import "./button.css";
+import classNames from 'classnames';
+import './button.css';
 
 const Button = ({ children, onClick, color, size }) => {
   return (
@@ -7,9 +7,9 @@ const Button = ({ children, onClick, color, size }) => {
       onClick={onClick}
       className={classNames({
         button: true,
-        "button-small": size === "small",
-        "button-success": color === "success",
-        "button-error": color === "error",
+        'button-small': size === 'small',
+        'button-success': color === 'success',
+        'button-error': color === 'error',
       })}
     >
       {children}
