@@ -1,75 +1,51 @@
+import React from 'react';
+
+import { useFilters, useTasks } from './hooks';
+
+import { ButtonUI, TasksFiltersComponent } from './components';
+
 import c from './App.module.css';
-import React, { useEffect, useState } from 'react';
 
 const App = () => {
-  const [task, setTask] = useState([]);
-  const [newTask, setNewTask] = useState('');
-
-  useEffect(() => {
-    const storedTasks = localStorage.getItem('tasks');
-    if (storedTasks) {
-      setTask(JSON.parse(storedTasks));
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('tasks', JSON.stringify(task));
-  }, [task]);
-
-  const addTask = () => {
-    setTask([...task, { title: newTask, completed: false }]);
-    setNewTask('');
-  };
-
-  const deleteTask = i => {
-    const updatedTodos = task.filter((_, index) => index !== i);
-    setTask(updatedTodos);
-  };
-
-  const searchTask = searchText =>
-    task.filter(task => task.title.includes(searchText));
-
-  const toggleTask = i => {
-    const updateTodos = [...task];
-    updateTodos[i].completed = !updateTodos[i].completed;
-    setTask(updateTodos);
-  };
+  const tasks = useTasks();
+  const filters = useFilters();
 
   return (
     <div className="app">
       <h1>Список</h1>
+      {/* <AddTaskFormComponent tasks={tasks} /> */}
       <div>
         <textarea
-          value={newTask}
+          value={tasks.taskTitle}
           onChange={el => {
-            setNewTask(el.target.value);
+            tasks.onChangeTaskTitle(el.target.value);
           }}
           placeholder="Записать задачу"
         ></textarea>
       </div>
       <div>
-        <button className={c.button1} onClick={addTask}>
-          Добавить пост
-        </button>
+        <ButtonUI onClick={tasks.onAddTask} color="success">
+          {!tasks.editingTaskId ? "Добавить" : "Сохранить"}
+        </ButtonUI>
       </div>
       <div>
         <h2>Списисок Задач</h2>
-        <textarea
-          onChange={e => {
-            setTask(searchTask(e.target.value));
-          }}
-          placeholder="Искать задачу"
-        ></textarea>
+        <TasksFiltersComponent filters={filters} />
+        {/* <TasksListComponent tasks={tasks} /> */}
+
         <ul>
-          {task.map((tasks, i) => (
-            <li>
-              {tasks.title}
-              <button onClick={() => toggleTask(i)} className={c.button2}>
-                {tasks.completed ? 'Выполнено' : 'Не выполнено'}
-              </button>
-              <button className={c.button2} onClick={() => deleteTask(i)}>
+          {filters.filterTasks(tasks.tasksList).map((task) => (
+            <li key={task.id}>
+              {task.title}
+              <ButtonUI onClick={() => tasks.onEditTask(task)} size="small">
+                Изменить
+              </ButtonUI>
+              <ButtonUI onClick={() => tasks.onChangeTaskStatus(task.id)} size="small" color="error">
+                {task.status === 'done' ? 'Выполнено' : 'Не выполнено'}
+              </ButtonUI>
+              <ButtonUI size="small" color="error" onClick={() => tasks.onDeleteTask(task.id)}>
                 Удалить
-              </button>
+              </ButtonUI>
             </li>
           ))}
         </ul>
